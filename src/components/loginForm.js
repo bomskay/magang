@@ -1,24 +1,26 @@
-// components/LoginForm.js
-"use client"; // Menandakan bahwa ini adalah komponen client-side
+"use client";
 
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig"; // Mengimpor konfigurasi Firebase
+import { auth } from "@/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth"; // Import metode login Firebase
 import { useRouter } from "next/navigation"; // Import useRouter dari Next.js
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter(); // Menggunakan useRouter dari Next.js untuk navigasi
+  const router = useRouter(); // Menggunakan useRouter untuk navigasi
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // Reset error message
+
     try {
+      // Menggunakan Firebase untuk login
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard"); // Arahkan ke halaman dashboard setelah login berhasil
+      router.push("/dashboard"); // Navigasi ke dashboard setelah login sukses
     } catch (err) {
-      setError("Login gagal. Periksa kembali email dan password Anda.");
+      setError("Login gagal. Periksa kembali email dan password Anda."); // Menangani error jika login gagal
     }
   };
 
@@ -55,7 +57,7 @@ const LoginForm = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-200"
+          className="w-full bg-black hover:bg-gray-700 text-white font-semibold py-2 rounded-md transition duration-200"
         >
           Login
         </button>

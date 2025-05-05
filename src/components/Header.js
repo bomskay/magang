@@ -4,24 +4,24 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <header className="bg-blue-600 text-white py-4 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Arsip</h1>
+    <header className="bg-white-600 text-black py-4 shadow-md">
+      <div className="w-full mx-auto px-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Arsip Surat Biro Pemerintahan</h1>
         <nav>
           <ul className="flex space-x-6">
             <li>
-              <Link href="/dashboard" className="hover:text-blue-300">
+              <Link href="/dashboard" className="hover:text-gray-300">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link href="/profil" className="hover:text-blue-300">
-                Profil
+              <Link href="/inputSuratMasuk" className="hover:text-gray-300">
+                Input Surat
               </Link>
             </li>
             <li>
-              <Link href="/settings" className="hover:text-blue-300">
-                Settings
+              <Link href="/daftarSurat" className="hover:text-gray-300">
+                Daftar Surat
               </Link>
             </li>
           </ul>
