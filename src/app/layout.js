@@ -1,4 +1,5 @@
 import './globals.css';
+import LayoutWrapper from '@/components/layoutWrapper';
 
 
 export const metadata = {
@@ -9,7 +10,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
-    </html>
+    <body className="min-h-screen flex flex-col">
+    <LayoutWrapper>{children}</LayoutWrapper>
+    </body>
+  </html>
   );
 }

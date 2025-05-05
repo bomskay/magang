@@ -1,14 +1,34 @@
 "use client";
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth"; // Import metode untuk memantau status autentikasi
+import { useRouter } from "next/navigation";
 import FormInputSurat from '@/components/formInputSurat';
-import Header from '@/components/Header';
-function page() {
-  return (
-    <div>
-        <Header />
-        <FormInputSurat />
-    </div>
-  )
-}
 
-export default page
+const inputSurat = () => {
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Memantau perubahan status autentikasi
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser); // Set user jika ada yang login
+      } else {
+        router.push("/"); // Redirect ke halaman login jika belum login
+      }
+    });
+
+    // Bersihkan listener saat komponen unmount
+    return () => unsubscribe();
+  }, [router]);
+
+  
+  return (
+    <div className="min-h-screen bg-white text-black">
+      <FormInputSurat />
+    </div>
+  );
+};
+
+export default inputSurat;

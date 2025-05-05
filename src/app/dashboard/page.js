@@ -5,8 +5,7 @@ import React, { useEffect, useState } from "react";
 import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth"; // Import metode untuk memantau status autentikasi
 import { useRouter } from "next/navigation";
-import Header from "@/components/Header";
-import UpdateSurat from "@/components/updateSurat";
+
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -36,8 +35,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <Header />
-      
+
     </div>
   );
 };
