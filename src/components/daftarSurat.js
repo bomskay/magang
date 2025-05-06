@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { supabase } from "@/supabaseClient";
 import FormUpdateSurat from "./formUpdateSurat";
@@ -20,7 +20,7 @@ const [searchTerm, setSearchTerm] = useState("");
 
 const filterSurat = (list) => {
   return list.filter((surat) =>
-    [surat.jenis, surat.perihal, surat.pengirim, surat.penerima, surat.timestamp?.toDate().toLocaleDateString("id-ID", {
+    [surat.jenis, surat.nomor, surat.perihal, surat.pengirim, surat.penerima, surat.timestamp?.toDate().toLocaleDateString("id-ID", {
       day: "2-digit",
       month: "long",
       year: "numeric",
@@ -32,57 +32,55 @@ const filterSurat = (list) => {
 };
 
 
-const fetchSurat = async () => {
-  setLoading(true);
-  try {
-    const querySnapshot = await getDocs(collection(db, "surat"));
-    const data = querySnapshot.docs.map((doc) => ({id: doc.id,...doc.data(),}));
+useEffect(() => {
+  const unsubscribe = onSnapshot(collection(db, "surat"), async (querySnapshot) => {
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
     const suratMasukData = data.filter((surat) => surat.jenis === "masuk");
     const suratKeluarData = data.filter((surat) => surat.jenis === "keluar");
 
     const fetchFileUrl = async (filePath, folder) => {
       if (filePath.includes(`surat/${folder}`)) {
-          filePath = filePath.replace(`surat/${folder}/`, "");
+        filePath = filePath.replace(`surat/${folder}/`, "");
       }
 
       const { data: fileData, error } = await supabase.storage
         .from("surat-bucket")
         .getPublicUrl(`surat/${folder}/${filePath}`);
 
-        if (error) {
-          console.error("Gagal mendapatkan URL file:", error.message);
-          return "";
-        }
+      if (error) {
+        console.error("Gagal mendapatkan URL file:", error.message);
+        return "";
+      }
 
-        return fileData.publicUrl;
-      };
+      return fileData.publicUrl;
+    };
 
-      const updatedSuratMasuk = await Promise.all(
-        suratMasukData.map(async (surat) => {
-          const fileUrl = await fetchFileUrl(surat.filePath, "masuk");
-          return { ...surat, fileUrl };
-        })
-      );
+    const updatedSuratMasuk = await Promise.all(
+      suratMasukData.map(async (surat) => {
+        const fileUrl = await fetchFileUrl(surat.filePath, "masuk");
+        return { ...surat, fileUrl };
+      })
+    );
 
-      const updatedSuratKeluar = await Promise.all(
-        suratKeluarData.map(async (surat) => {
-          const fileUrl = await fetchFileUrl(surat.filePath, "keluar");
-          return { ...surat, fileUrl };
-        })
-      );
+    const updatedSuratKeluar = await Promise.all(
+      suratKeluarData.map(async (surat) => {
+        const fileUrl = await fetchFileUrl(surat.filePath, "keluar");
+        return { ...surat, fileUrl };
+      })
+    );
 
-      setSuratMasuk(updatedSuratMasuk);
-      setSuratKeluar(updatedSuratKeluar);
-    } catch (error) {
-      console.error("Gagal mengambil data surat:", error.message);
-    }
+    setSuratMasuk(updatedSuratMasuk);
+    setSuratKeluar(updatedSuratKeluar);
     setLoading(false);
-  };
+  });
 
-  useEffect(() => {
-    fetchSurat();
-  }, []);
+  // Cleanup listener ketika komponen di-unmount
+  return () => unsubscribe();
+}, []);
 
   if (loading) {
     return <div className="text-center mt-10">Memuat data surat...</div>;
@@ -133,7 +131,6 @@ const fetchSurat = async () => {
                 </button>
                 <DeleteSuratButton
                   surat={surat}
-                  onSuccess={fetchSurat}
                 />
               </div>
               </td>
@@ -183,7 +180,6 @@ const fetchSurat = async () => {
               </button>
               <DeleteSuratButton
                 surat={surat}
-                onSuccess={fetchSurat}
               />
             </div>
             </td>

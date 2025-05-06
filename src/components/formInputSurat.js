@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/supabaseClient";
 import { db } from "@/firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, collection, addDoc } from "firebase/firestore";
 
 const FormInputSurat = () => {
   const [file, setFile] = useState(null);
@@ -32,7 +32,7 @@ const FormInputSurat = () => {
     const timestamp = Date.now();
     const ext = file.name.split(".").pop();
     const fileName = `${timestamp}-${file.name.replace(/\s+/g, "_")}`;
-    const folder = jenis === "masuk" ? "Masuk" : "keluar";
+    const folder = jenis.toLowerCase();
     const filePath = `surat/${folder}/${fileName}`;
 
     try {
@@ -57,7 +57,7 @@ const FormInputSurat = () => {
       // Simpan data ke Firestore
       const docId = nomor.replace(/\//g, "-");
 
-      await setDoc(doc(db, "surat", docId), {
+      await addDoc(collection(db, "surat"), {
         jenis,
         nomor,
         tanggal: "2025-05-05", // bisa dijadikan input juga

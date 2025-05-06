@@ -54,13 +54,11 @@ const FormUpdateSuratModal = ({ surat, onClose }) => {
       await updateDoc(doc(db, "surat", surat.id), {
         jenis,
         nomor,
-        tanggal,
         pengirim,
         penerima,
         perihal,
         filePath,
         fileUrl,
-        timestamp: new Date(),
       });
 
       alert("Surat berhasil diperbarui!");

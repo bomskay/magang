@@ -4,7 +4,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { supabase } from "@/supabaseClient";
 
-const DeleteSuratButton = ({ surat, onSuccess }) => {
+const DeleteSuratButton = ({ surat }) => {
   const handleDelete = async () => {
     const konfirmasi = confirm("Yakin ingin menghapus surat ini?");
     if (!konfirmasi) return;
@@ -25,7 +25,6 @@ const DeleteSuratButton = ({ surat, onSuccess }) => {
       await deleteDoc(doc(db, "surat", surat.id));
 
       alert("Surat berhasil dihapus.");
-      onSuccess(); // Refresh data
     } catch (error) {
       alert("Gagal menghapus surat: " + error.message);
     }
