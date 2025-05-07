@@ -136,7 +136,7 @@ const FormInputSurat = () => {
 
       {/* Perihal */}
       <div>
-        <label className="block mb-1 text-gray-600 font-medium">Penerihal</label>
+        <label className="block mb-1 text-gray-600 font-medium">Perihal</label>
         <input
           type="text"
           value={perihal}
@@ -162,7 +162,7 @@ const FormInputSurat = () => {
       {/* Tombol Submit */}
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+        className="w-full bg-blue-200 text-black py-2 px-4 rounded-md hover:bg-blue-300 transition duration-200"
       >
         Simpan Surat
       </button>
